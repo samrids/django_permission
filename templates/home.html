@@ -1,0 +1,22 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">Log Out</a></p>
+  {% if can_add %}User Can Add<br>{% endif %}
+  {% if can_change %}User Can Update<br>{% endif %}
+  {% if can_delete %}User Can Delete<br>{% endif %}
+  {% if can_view %}User Can View<br>{% endif %}
+  {% if not can_view and not can_add and not can_change and not can_delete %}
+     Access denide ! <br>
+  {% endif %}
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
