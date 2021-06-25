@@ -17,7 +17,12 @@ def testuserperms(request):
     #     'can_view'   : 'app.view_task'   in request.user.get_group_permissions() 
     # }
     print ( request.user.get_group_permissions() )
+    perm_groups = list()
     for g in request.user.groups.all():
         print (g)
+        perm_groups.append(g.name)    
+    
+    if 'DeleteGroup' in perm_groups:
+        print ( 'Can delete item')
 
     return render(request,'home.html', context=context)
