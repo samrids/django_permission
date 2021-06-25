@@ -1,2 +1,3 @@
-# django_permission
-django work with permission
+<b># django</b><br>
+django work with permission<br>
+API work with REST Framework<br>
