@@ -25,9 +25,11 @@ from rest_framework_simplejwt import views as jwt_views
 
 from app import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),    
+    path('users/', include('accounts.urls')),    
     path('', views.testuserperms, name='home'),
 
     path('api/', include('api.urls')),
