@@ -8,6 +8,34 @@ def get_avatar_full_path(instance, filename):
     filename = '{0}.{1}'.format(instance.pk, ext)    
     return os.path.join("avatars", str(instance.pk), filename) 
 
+GENDER_CHOICES = (
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('O', 'Other'),
+)
+
+class Province(models.Model):
+    province_code = models.SmallIntegerField(null=False)
+    province_name = models.CharField(max_length=150,null=False,blank=False)
+
+class Amphur(models.Model):
+    amphur_code = models.SmallIntegerField(null=False) 
+    amphur_name = models.CharField(max_length=150,null=False,blank=False)    
+    province_code = models.SmallIntegerField(null=False)
+    province = models.ForeignKey(to=Province,null=False,blank=False,on_delete=models.CASCADE, default=1)
+
+
+
+class Address(models.Model):
+    user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=150, null=False, blank=False)
+    phone= models.CharField(max_length=15, null=False, blank=False)
+    
+     
+    addr_detail = models.CharField(max_length=250, null=False, blank=False)
+
+    created_at    = models.DateTimeField(auto_now_add=True)
+    updated_at    = models.DateTimeField(auto_now=True)    
 class Profile(models.Model):
     user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -18,6 +46,9 @@ class Profile(models.Model):
     status_text   = models.CharField(max_length=120, null=True, blank=True)
 
     avatar        = models.ImageField(upload_to=get_avatar_full_path, null=True, blank=True, default='avatars/default_avatar.png')
+
+    gender        = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,blank=False,default='M')
+    mobile        = models.CharField(max_length=15,null=True,blank=True)
 
     created_at    = models.DateTimeField(auto_now_add=True)
     updated_at    = models.DateTimeField(auto_now=True)
