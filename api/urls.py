@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 # from django.conf.urls import url
 # from django.conf.urls import url
 # from rest_framework import routers
-from api import views
+from api import views as view_profile
+from api.userprofile import views as views_usr
 
 # API
 urlpatterns = [       
@@ -12,9 +13,14 @@ urlpatterns = [
         template_name='swagger-ui.html',
         extra_context={'schema_url':'openapi-schema'}
     ), name='swagger-ui'),
-    # path('', include(router.urls)),
-    path('snippets/', views.SnippetList.as_view()),
-    path('snippets/<int:pk>/', views.SnippetDetail.as_view()),
-    path('avatar/<int:pk>/', views.AvatarUpdate.as_view()),    
     
+    # path('', include(router.urls)),
+    path('profiles/', view_profile.ProfileList.as_view()),
+    path('profile/<int:pk>/', view_profile.ProfileDetail.as_view()),
+    path('profile/avatar/<int:pk>/', view_profile.AvatarUpdate.as_view()),  
+    
+    #Account
+    path('user/register/', views_usr.RegistrationAPIView.as_view()),
+    path('user/update/<int:pk>/', views_usr.UpdateFirstLast_Name.as_view()),        
+    path('user/activate/<uidb64>/<token>/', views_usr.Activate, name='activate'),      
 ]

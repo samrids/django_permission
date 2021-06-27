@@ -1,5 +1,5 @@
-from snippets.models import Snippets
-from api.serializers import SnippetSerializer, AvatarSerializer
+from userprofile.models import Profile
+from api.serializers import ProfileSerializer, AvatarSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,42 +11,42 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 
-class SnippetList(APIView):
+class ProfileList(APIView):
     permission_classes = (IsAuthenticated,)
     """
-    List all snippets, or create a new snippet.
+    List all profiles, or create a new profile.
     """
     def get(self, request, format=None):
-        snippets = Snippets.objects.all().order_by('-id')
-        serializer = SnippetSerializer(snippets, many=True)
+        profiles = Profile.objects.all().order_by('-id')
+        serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = SnippetSerializer(data=request.data)
+        serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SnippetDetail(APIView):
+class ProfileDetail(APIView):
     permission_classes = (IsAuthenticated,)    
     """
-    Retrieve, update or delete a snippet instance.
+    Retrieve, update or delete a profile instance.
     """
     def get_object(self, pk):
         try:
-            return Snippets.objects.get(pk=pk)
-        except Snippets.DoesNotExist:
+            return Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        snippets = self.get_object(pk)
-        serializer = SnippetSerializer(snippets)
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile)
         return Response(serializer.data)
         
     def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet, data=request.data)
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -54,8 +54,8 @@ class SnippetDetail(APIView):
 
     
     def patch(self, request, pk, format=None):       
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet, data=request.data, partial=True)
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
 
         chkfields = list()
         fieldslist = list(serializer.fields)
@@ -75,8 +75,8 @@ class SnippetDetail(APIView):
 
     
     def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
+        profile = self.get_object(pk)
+        profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)        
 
 
@@ -85,13 +85,13 @@ class AvatarUpdate(APIView):
     
     def get_object(self, pk):
         try:
-            return Snippets.objects.get(pk=pk)
-        except Snippets.DoesNotExist:
+            return Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
             raise Http404
 
     def patch(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = AvatarSerializer(snippet, data=request.data, partial=True)
+        profile = self.get_object(pk)
+        serializer = AvatarSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

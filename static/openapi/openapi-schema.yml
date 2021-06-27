@@ -1,8 +1,8 @@
 openapi: 3.0.2
 info:
-  title: Snippets API
+  title: Profile API
   version: v1
-  description: Snippets API Documents
+  description: Profile API Documents
 components:
   securitySchemes:
     bearerAuth:
@@ -10,14 +10,14 @@ components:
       scheme: bearer
       bearerFormat: JWT  # optional, for documentation purposes only
 paths:
-  /api/snippets/:
+  /api/profiles/:
     get:
       tags:
-        - Get Snippets
+        - Get Profile
       security:
         - bearerAuth: []
-      operationId: listSnippets
-      summary: List all Snippets
+      operationId: listProfiles
+      summary: List all Profiles
       parameters: []
       responses:
         '200':
@@ -26,32 +26,28 @@ paths:
               schema:
                 type: object
                 items: {"status": "success"}
-          description: 'Get Snippets success'
+          description: 'Get Profile success'
     post:
       tags:
-        - Manage Snippet
+        - Manage Profile
       security:
         - bearerAuth: []        
-      operationId: CreateSnippetList
-      summary: Creates a Snippet
+      operationId: CreateProfileList
+      summary: Creates a Profile
       parameters: []
       requestBody:
-        description: "please enter first_name, last_name, status_text, remark_text"
+        description: "please enter bio_text, status_text"
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                first_name:
-                  type: string
-                last_name:
-                  type: string
                 date_of_birth:
                   type: string
-                status_text:
+                bio_text:
                   type: string
-                remark_text:
+                status_text:
                   type: string
       responses:
         '200':
@@ -59,14 +55,14 @@ paths:
             application/json:
               schema: {}
           description: 'Success'
-  /api/snippets/{id}/:
+  /api/profile/{id}/:
     get:
       tags:
-        - Get Snippets
+        - Get Profiles
       security:
         - bearerAuth: []        
-      operationId: RetrieveSnippetDetail
-      summary: List Snippet by id
+      operationId: RetrieveProfileDetail
+      summary: List Profile by id
       parameters:
       - name: id
         in: path
@@ -79,14 +75,14 @@ paths:
           content:
             application/json:
               schema: {}
-          description: 'Get Snippet success'
+          description: 'Get Profile success'
     put:
       tags:
-        - Manage Snippet
+        - Manage Profile
       security:
         - bearerAuth: []
-      operationId: UpdateSnippetDetail
-      summary: Update Snippet by id
+      operationId: UpdateProfileDetail
+      summary: Update Profile by id
       parameters:
       - name: id
         in: path
@@ -95,16 +91,16 @@ paths:
         schema:
           type: string
       requestBody:
-        description: "please enter status_text, remark_text"
+        description: "please enter bio_text, status_text"
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                status_text:
+                bio_text:
                   type: string
-                remark_text:
+                status_text:
                   type: string                  
       responses:
         '200':
@@ -114,11 +110,11 @@ paths:
           description: 'Update success'
     patch:
       tags:
-        - Manage Snippet
+        - Manage Profile
       security:
         - bearerAuth: []        
-      operationId: PartialUpdateSnippetDetail
-      summary: Partial update Snippet by id
+      operationId: PartialUpdateProfileDetail
+      summary: Partial update Profile by id
       parameters:
       - name: id
         in: path
@@ -127,36 +123,32 @@ paths:
         schema:
           type: string
       requestBody:
-        description: "please enter status_text, remark_text can be partial update field(s)"
+        description: "please enter bio_text, status_text can be partial update field(s)"
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                first_name:
-                  type: string
-                last_name:
-                  type: string
                 date_of_birth:
                   type: string
-                status_text:
+                bio_text:
                   type: string
-                remark_text:
+                status_text:
                   type: string
       responses:
         '200':
           content:
             application/json:
               schema: {}
-          description: 'Update sucess'
+          description: 'Update success'
     delete:
       tags:
-        - Manage Snippet  
+        - Manage Profile  
       security:
         - bearerAuth: []        
-      operationId: DestroySnippetDetail
-      summary: Delete Snippet by id
+      operationId: DestroyProfileDetail
+      summary: Delete Profile by id
       parameters:
       - name: id
         in: path
@@ -213,7 +205,6 @@ paths:
               properties:
                 username:
                   type: string
-                  example: username
                 password:
                   type: string
                   format: password
@@ -251,3 +242,64 @@ paths:
                 properties:
                   token:
                     type: string    
+  /api/user/register/:
+    post:
+      tags:
+        - Manage Profile
+      operationId: RegisterNewUser
+      summary: Register new user
+      requestBody:
+        description: "please enter email, username, password, first_name, last_name"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                first_name:
+                  type: string
+                last_name:
+                  type: string                                    
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: 'Register success'
+  /api/user/update/{pk}/:
+    patch:
+      tags:
+        - Manage Profile
+      security:
+        - bearerAuth: []        
+      operationId: UpdateFirstName_LastName
+      summary: Update first_name, last_name
+      parameters:
+      - name: pk
+        in: path
+        required: true
+      requestBody:
+        description: "please first_name, last_name"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string                                    
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: 'Update success'
