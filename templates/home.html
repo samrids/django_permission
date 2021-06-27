@@ -15,6 +15,11 @@
      Access denide ! <br>
   {% endif %}
 
+ {{ perms.app.add_task }}
+ {{ perms.app.change_task }}
+ {{ perms.app.delete_task }}
+ {{ perms.app.view_task }}
+
  {{ perms.app }}
 
 {% else %}

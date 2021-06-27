@@ -16,11 +16,14 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser 
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission, SAFE_METHODS
+
+from rest_framework.permissions import DjangoObjectPermissions
 
 from django.http import Http404
 
 from userprofile.models import Profile
+from rest_framework import permissions
 
 class RegistrationAPIView(GenericAPIView):
     serializer_class = RegistrationSerializer
@@ -68,11 +71,29 @@ def Activate(request, uidb64, token):
         return redirect('/accounts/login/') #TODO 
 
 
-class UpdateFirstLast_Name(APIView):
-    permission_classes = (IsAuthenticated,)    
+class CustomUserPermission(permissions.BasePermission):
+
+    def is_allow(self, theperm):
+        # Return True if user in Groups
+        for group in theperm:
+            if group in ['supervisor', 'manager']:
+                return True
+        
+        return False
+
+    def has_permission(self, request, view):
+        # return True if user has permission 
+        custom_perms = request.user.groups.values_list('name',flat=True) 
+        perm_groups = list(custom_perms)  
+        
+        return self.is_allow(perm_groups)     #Check with group (Has 3 Groups [manager, supervisor, staff], see an images)
+        #return request.user.has_perm('userprofile.change_profile') #Check with has_perm('foo.change_bar')
+class UpdateFirstLast_Name(APIView):    
+    
     """
     Update first_name, last_name
     """
+    permission_classes = (CustomUserPermission,)
 
     def get_object(self, pk):
         try:
