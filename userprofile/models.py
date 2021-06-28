@@ -2,6 +2,7 @@ import os
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE
 
 def get_avatar_full_path(instance, filename): 
     ext = filename.split('.')[-1]
@@ -14,23 +15,46 @@ GENDER_CHOICES = (
     ('O', 'Other'),
 )
 
-class Province(models.Model):
-    province_code = models.SmallIntegerField(null=False)
-    province_name = models.CharField(max_length=150,null=False,blank=False)
+class Geographies(models.Model):
+    name = models.CharField(max_length=100,null=False,blank=False)
 
-class Amphur(models.Model):
-    amphur_code = models.SmallIntegerField(null=False) 
-    amphur_name = models.CharField(max_length=150,null=False,blank=False)    
-    province_code = models.SmallIntegerField(null=False)
-    province = models.ForeignKey(to=Province,null=False,blank=False,on_delete=models.CASCADE, default=1)
+    def __str__(self):
+        return self.name
 
+class Provinces(models.Model):
+    code = models.CharField(max_length=2,null=False,blank=False)
+    name_th = models.CharField(max_length=150,null=False,blank=False)
+    name_en = models.CharField(max_length=150,null=False,blank=False)
+    geography = models.ForeignKey(to=Geographies,null=True,on_delete=models.CASCADE,default=1)
+    
+    def __str__(self):
+        return self.name_th
+
+    
+class Amphures(models.Model):
+    code = models.CharField(max_length=4,null=False,blank=False)
+    name_th = models.CharField(max_length=150,null=False,blank=False)    
+    name_en = models.CharField(max_length=150,null=False,blank=False)    
+    province = models.ForeignKey(to=Provinces,null=False,on_delete=models.CASCADE,default=1)
+
+    def __str__(self):
+        return self.name_th
+class Districts(models.Model):
+    postcode = models.IntegerField(null=False)
+    name_th = models.CharField(max_length=150,null=False,blank=False)    
+    name_en = models.CharField(max_length=150,null=False,blank=False)    
+    amphure = models.ForeignKey(to=Amphures,null=False,blank=False,on_delete=models.CASCADE,default=1)
+    
+    def __str__(self):
+        return self.name_th
 
 
 class Address(models.Model):
-    user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150, null=False, blank=False)
     phone= models.CharField(max_length=15, null=False, blank=False)
     
+    district = models.ForeignKey(to=Districts,null=False,on_delete=models.CASCADE,default=100101)
      
     addr_detail = models.CharField(max_length=250, null=False, blank=False)
 
@@ -52,6 +76,8 @@ class Profile(models.Model):
 
     created_at    = models.DateTimeField(auto_now_add=True)
     updated_at    = models.DateTimeField(auto_now=True)
+
+
 
     def __str__(self):
         return '%s %s' % (self.user.first_name, self.user.last_name)
