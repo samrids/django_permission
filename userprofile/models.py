@@ -46,20 +46,35 @@ class Districts(models.Model):
     amphure = models.ForeignKey(to=Amphures,null=False,blank=False,on_delete=models.CASCADE,default=1)
     
     def __str__(self):
-        return self.name_th
+        return '{0} {1}'.format(self.postcode, self.name_th)
 
+    @property
+    def province_str(self):
+        return self.amphure.province.name_th
+        
 
+ADDRESS_CHOICES = (
+    ('H', 'ที่บ้าน'),
+    ('W', 'ที่ทำงาน'),
+    ('U', 'ไม่ระบุ'),
+)
 class Address(models.Model):
     user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=150, null=False, blank=False)
     phone= models.CharField(max_length=15, null=False, blank=False)
-    
-    district = models.ForeignKey(to=Districts,null=False,on_delete=models.CASCADE,default=100101)
-     
-    addr_detail = models.CharField(max_length=250, null=False, blank=False)
 
-    created_at    = models.DateTimeField(auto_now_add=True)
-    updated_at    = models.DateTimeField(auto_now=True)    
+    province = models.ForeignKey(to=Provinces,null=False,on_delete=models.CASCADE,default=1)    
+    amphure  = models.ForeignKey(to=Amphures,null=False,on_delete=models.CASCADE,default=1)    
+    district = models.ForeignKey(to=Districts,null=False,on_delete=models.CASCADE,default=100101)   
+    addr_detail = models.CharField(max_length=250, null=False, blank=False)
+    address_type = models.CharField(max_length=1, default='U',choices=ADDRESS_CHOICES)
+    is_deafult  = models.BooleanField(null=False, default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+
+    def __str__(self):
+        return self.name
 class Profile(models.Model):
     user = models.OneToOneField(to=User,on_delete=models.CASCADE, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)

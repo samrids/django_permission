@@ -73,7 +73,7 @@ def Activate(request, uidb64, token):
 
 class CustomUserPermission(permissions.BasePermission):
 
-    def is_allow(self, theperm):
+    def is_group_allow(self, theperm):
         # Return True if user in Groups
         for group in theperm:
             if group in ['supervisor', 'manager']:
@@ -82,11 +82,14 @@ class CustomUserPermission(permissions.BasePermission):
         return False
 
     def has_permission(self, request, view):
-        # return True if user has permission 
+        
         custom_perms = request.user.groups.values_list('name',flat=True) 
         perm_groups = list(custom_perms)  
         
-        return self.is_allow(perm_groups)     #Check with group (Has 3 Groups [manager, supervisor, staff], see an images)
+        is_GroupAllow = self.is_group_allow(perm_groups)     #Check with group (Has 3 Groups [manager, supervisor, staff], see an images)
+        if not is_GroupAllow:
+            return request.user == User.objects.get(pk=view.kwargs['pk'])
+
         #return request.user.has_perm('userprofile.change_profile') #Check with has_perm('foo.change_bar')
 class UpdateFirstLast_Name(APIView):    
     
