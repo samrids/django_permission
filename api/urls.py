@@ -16,6 +16,7 @@ urlpatterns = [
     
     # path('', include(router.urls)),
     path('profiles/', view_profile.ProfileList.as_view()),
+    path('profile/', view_profile.ProfileByToken.as_view()),
     path('profile/<int:pk>/', view_profile.ProfileDetail.as_view()),
     path('profile/avatar/<int:pk>/', view_profile.AvatarUpdate.as_view()),  
     

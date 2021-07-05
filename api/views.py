@@ -28,6 +28,22 @@ class ProfileList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ProfileByToken(APIView):
+    permission_classes = (IsAuthenticated,)    
+    """
+    Retrieve, User profile by access token
+    """
+    def get_object(self, pk):
+        try:
+            return Profile.objects.get(user_id=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, format=None):
+        profile = self.get_object(request.user.id)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+        
 class ProfileDetail(APIView):
     permission_classes = (IsAuthenticated,)    
     """
