@@ -174,6 +174,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 STATICFILES_DIRS = [
     ('openapi', os.path.join(STATIC_ROOT, 'openapi').replace('\\','/')),
+    ('swagger', os.path.join(STATIC_ROOT, 'swagger').replace('\\','/')),
+    ('images', os.path.join(STATIC_ROOT, 'images').replace('\\','/')),
 ]
 
 # Default primary key field type

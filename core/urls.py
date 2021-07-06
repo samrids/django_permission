@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 from django.views.static import serve
 from django.conf.urls import url
 
+from django.views.generic import RedirectView
+from django.conf.urls import url
+
 from rest_framework_simplejwt import views as jwt_views
 
 from app import views
@@ -41,6 +44,8 @@ urlpatterns = [
     
     # for static
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
-    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),    
+    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),  
+    url(r'^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
+  
 ]
 

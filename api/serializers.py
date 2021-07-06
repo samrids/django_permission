@@ -22,6 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     age = serializers.SerializerMethodField(read_only=True)
     avatar_url = serializers.SerializerMethodField(read_only=True)
 
+    userid =  serializers.SerializerMethodField(read_only=True)
     username = serializers.SerializerMethodField(read_only=True)
     first_name = serializers.SerializerMethodField(read_only=True)
     last_name = serializers.SerializerMethodField(read_only=True)
@@ -30,16 +31,18 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'mobile', 'date_of_birth', 'age', 'adult', 'bio_text', 'status_text', 'avatar_url')
+        fields = ('id', 'userid', 'username', 'email', 'first_name', 'last_name', 'mobile', 'date_of_birth', 'age', 'adult', 'bio_text', 'status_text', 'avatar_url')
         read_only_fields = ('avatar_url', 'username', 'first_name', 'last_name', 'email', 'mobile')
 
 
-    def get_age(self, instance):
-        return instance.age
+    def get_userid(self, instance):
+        if instance.user:
+            return instance.user.id
+        return None
 
     def get_username(self, instance):
         if instance.user:
-            return instance.user.email
+            return instance.user.username
         return None
 
     def get_email(self, instance):
@@ -52,15 +55,13 @@ class ProfileSerializer(serializers.ModelSerializer):
             return instance.user.first_name
         return None
 
-    def get_first_name(self, instance):
-        if instance.user:
-            return instance.user.first_name
-        return None
-
     def get_last_name(self, instance):
         if instance.user:
             return instance.user.last_name
         return None                        
+
+    def get_age(self, instance):
+        return instance.age
 
     def get_avatar_url(self, instance):
         current_site = '127.0.0.1:8000'
